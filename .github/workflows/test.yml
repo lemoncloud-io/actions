@@ -1,0 +1,58 @@
+name: Test
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+    workflow_dispatch:
+        inputs:
+            status:
+                description: Card status for the live post
+                type: choice
+                options: [success, failure, cancelled]
+                default: success
+
+permissions:
+    contents: read
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: actionlint
+              run: |
+                  bash <(curl -sSf https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+                  ./actionlint -color
+            - name: shellcheck
+              run: shellcheck notify-dou/notify.sh notify-dou/test/run.sh
+
+    mock:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - run: bash notify-dou/test/run.sh
+
+    # Posts a real card to the channel behind this repo's DOU_* secrets. Manual only, so a
+    # pull request never writes into a live channel.
+    live:
+        if: github.event_name == 'workflow_dispatch'
+        needs: [lint, mock]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - id: notify
+              uses: ./notify-dou
+              with:
+                  url: ${{ secrets.DOU_WEBHOOK_URL }}
+                  token: ${{ secrets.DOU_WEBHOOK_TOKEN }}
+                  channel-id: ${{ secrets.DOU_CHANNEL_ID }}
+                  status: ${{ inputs.status }}
+                  stage: test
+                  text: Live check of `notify-dou` from ${{ github.ref_name }}.
+            - name: Require a created message
+              env:
+                  CHAT_ID: ${{ steps.notify.outputs.chat-id }}
+              run: |
+                  [[ -n "$CHAT_ID" ]] || { echo '::error::no DoU message was created'; exit 1; }
+                  echo "created $CHAT_ID"

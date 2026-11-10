@@ -1,0 +1,68 @@
+name: Notify DoU
+description: Post a deploy result card to a DoU channel through its webhook. Never fails the calling job.
+
+inputs:
+    token:
+        description: Channel webhook token (secret). Empty → the step warns and skips.
+        required: false
+        default: ''
+    channel-id:
+        description: Target DoU channel id. Empty → the step warns and skips.
+        required: false
+        default: ''
+    url:
+        description: Webhook endpoint (secret). Empty → the step warns and skips.
+        required: false
+        default: ''
+    status:
+        description: success | failure | cancelled. Sets the color and the header wording.
+        required: false
+        default: success
+    stage:
+        description: Deploy stage shown in the header, e.g. dev, prod.
+        required: false
+        default: ''
+    title:
+        description: Header text. Empty → "<repo> <stage> 배포 완료|실패|취소". The server prefixes the color emoji.
+        required: false
+        default: ''
+    text:
+        description: Card body (mrkdwn). Empty → the head commit subject.
+        required: false
+        default: ''
+    blocks:
+        description: Block Kit JSON array the workflow already builds. Used for the body when text is empty — section texts and fields only.
+        required: false
+        default: ''
+    release-notes:
+        description: Release notes in GitHub markdown (e.g. release-drafter body). Appended under "Release Notes".
+        required: false
+        default: ''
+    fields:
+        description: Extra fields, one "Label=value" per line, appended after the default ones.
+        required: false
+        default: ''
+
+outputs:
+    chat-id:
+        description: Id of the created DoU message, empty when the post was skipped or failed.
+        value: ${{ steps.post.outputs.chat-id }}
+
+runs:
+    using: composite
+    steps:
+        - id: post
+          shell: bash
+          run: bash "$GITHUB_ACTION_PATH/notify.sh"
+          env:
+              INPUT_TOKEN: ${{ inputs.token }}
+              INPUT_CHANNEL_ID: ${{ inputs.channel-id }}
+              INPUT_URL: ${{ inputs.url }}
+              INPUT_STATUS: ${{ inputs.status }}
+              INPUT_STAGE: ${{ inputs.stage }}
+              INPUT_TITLE: ${{ inputs.title }}
+              INPUT_TEXT: ${{ inputs.text }}
+              INPUT_BLOCKS: ${{ inputs.blocks }}
+              INPUT_RELEASE_NOTES: ${{ inputs.release-notes }}
+              INPUT_FIELDS: ${{ inputs.fields }}
+              HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
