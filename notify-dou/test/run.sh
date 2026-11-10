@@ -64,6 +64,7 @@ INPUT_BLOCKS='[
   {"type":"divider"},
   {"type":"section","fields":[{"type":"mrkdwn","text":"*웹* <https://x.dev|개발 서버>"},{"type":"mrkdwn","text":"*랜딩* ok"}]},
   {"type":"section","fields":[{"type":"mrkdwn","text":"*배포 시각*\n2026"},{"type":"mrkdwn","text":"*커밋*\nabc"}]},
+  {"type":"section","fields":[{"type":"mrkdwn","text":"*실패 시각*\n2026"}]},
   {"type":"context","elements":[{"type":"mrkdwn","text":"by octo"}]}
 ]' bash "$script" >/dev/null
 jq -e '.meta.text == "*배포 완료:* 1개\n*웹* 개발 서버\n*랜딩* ok"' "$req" >/dev/null || { cat "$req"; fail 'blocks body'; }
