@@ -34,7 +34,7 @@ notify:
 🟢 <repo> <stage> 배포 완료               header — success 🟢 완료 · failure 🔴 실패 · cancelled/skipped 🟠
 <text>                                   body — `text`, else `blocks` flattened, else the head commit subject
 *Release Notes* …                        only when `release-notes` is set
-배포 시각 · 커밋 · <fields>               KST time, short sha, then your own fields
+시각 · 커밋 · <fields>                  KST time, short sha, then your own fields
 <repo> · by <actor> · run #<n> 원문 보기   context — 원문 보기 opens the workflow run
 ```
 

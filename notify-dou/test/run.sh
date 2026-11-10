@@ -37,7 +37,7 @@ jq -e '
     and (.meta | has("username") | not) and .meta.footer == "sample-app · by octo · run #7"
     and .meta.sourceUrl == "https://github.com/lemoncloud-io/sample-app/actions/runs/42"
     and (.meta.ts | type) == "number"
-    and (.meta.fields[0].title == "배포 시각" and (.meta.fields[0].value | test("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$")))
+    and (.meta.fields[0].title == "시각" and (.meta.fields[0].value | test("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$")))
     and .meta.fields[1:] == [
         {title: "커밋", value: "0123456"},
         {title: "URL", value: "https://dev.example.com/?a=b"},
@@ -53,7 +53,7 @@ INPUT_STATUS=failure INPUT_TITLE='Custom title' INPUT_TEXT=':warning: :deploy: :
     INPUT_RELEASE_NOTES=$'## 🚀 Features\r\n\r\n- **New** [thing](https://x.dev/1) @a (#1)\n* fix' bash "$script" >/dev/null
 jq -e '.meta.color == "danger" and .meta.title == "Custom title"
     and .meta.text == "⚠️ *bold* 웹 <b> at 10:30:00\n\n*Release Notes*\n*🚀 Features*\n\n• *New* thing @a (#1)\n• fix"
-    and (.meta.fields | map(.title)) == ["배포 시각", "커밋"]' "$req" >/dev/null || { cat "$req"; fail 'failure card'; }
+    and (.meta.fields | map(.title)) == ["시각", "커밋"]' "$req" >/dev/null || { cat "$req"; fail 'failure card'; }
 
 # 3. blocks: section texts and fields become the body; header, divider, context and the 배포 시각 row do not.
 base_env

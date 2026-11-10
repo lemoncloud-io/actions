@@ -93,7 +93,7 @@ fi
 fields=$(jq -n \
     --arg timestamp "$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S')" \
     --arg commit "${sha:0:7}" \
-    '[ {title: "배포 시각", value: $timestamp}, {title: "커밋", value: $commit} ]')
+    '[ {title: "시각", value: $timestamp}, {title: "커밋", value: $commit} ]')
 
 while IFS= read -r line; do
     line="${line%$'\r'}"
