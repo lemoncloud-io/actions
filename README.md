@@ -41,7 +41,9 @@ notify:
 The sender shows as "Webhook". `content` (push preview, search) is the header text.
 
 DoU renders `*bold*` and `` `code` `` but not `<url|label>` links or HTML entities inside the card, so the action turns
-links into their label (`<https://x|개발 서버>` → `개발 서버`) and unescapes `&lt;` `&gt;` `&amp;`. Release notes in
+links into their label (`<https://x|개발 서버>` → `개발 서버`) and unescapes `&lt;` `&gt;` `&amp;`. Slack emoji
+codes do not render either: `:warning:` `:mag:` `:x:` `:white_check_mark:` `:rocket:` `:wrench:` become the emoji, and any
+other code standing alone between spaces (the Slack workspace's own `:deploy:`, `:<product>-logo:`) is dropped. Release notes in
 GitHub markdown are converted too: headings and `**bold**` become `*bold*`, `[text](url)` becomes `text`, list markers
 become `•`. No `slackify-markdown-action` step is needed.
 

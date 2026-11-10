@@ -18,8 +18,13 @@ warn() {
 }
 
 # DoU renders neither <url|label> links nor HTML entities inside the card, so keep the words only.
+# Slack emoji codes do not render in DoU: the common ones become the emoji, workspace-only ones
+# (:deploy:, :<product>-logo:) are dropped. A code must stand alone between spaces, so a time like
+# 10:30:00 or a URL is never touched; the rule runs twice because adjacent codes share a space.
 to_plain() {
-    sed -E 's/<[^|>]+\|([^>]+)>/\1/g; s/<(https?:[^>]+)>/\1/g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g'
+    sed -E 's/:warning:/⚠️/g; s/:mag:/🔍/g; s/:x:/❌/g; s/:white_check_mark:/✅/g; s/:rocket:/🚀/g; s/:wrench:/🔧/g' |
+        sed -E 's/(^|[[:space:]]):[a-z][a-z0-9_+-]*:([[:space:]]|$)/\1/g; s/(^|[[:space:]]):[a-z][a-z0-9_+-]*:([[:space:]]|$)/\1/g' |
+        sed -E 's/<[^|>]+\|([^>]+)>/\1/g; s/<(https?:[^>]+)>/\1/g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g'
 }
 
 # GitHub-flavoured release notes (release-drafter body) to DoU mrkdwn.

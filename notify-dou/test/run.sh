@@ -49,10 +49,10 @@ grep -qx 'chat-id=9990001:1' "$work/output" || fail "chat-id output missing: $(c
 # 2. failure status, explicit title/text, no version.
 base_env
 rm -f "$req"
-INPUT_STATUS=failure INPUT_TITLE='Custom title' INPUT_TEXT='*bold* <https://x.dev|웹> &lt;b&gt;' INPUT_FIELDS='' \
+INPUT_STATUS=failure INPUT_TITLE='Custom title' INPUT_TEXT=':warning: :deploy: :slp: *bold* <https://x.dev|웹> &lt;b&gt; at 10:30:00' INPUT_FIELDS='' \
     INPUT_RELEASE_NOTES=$'## 🚀 Features\r\n\r\n- **New** [thing](https://x.dev/1) @a (#1)\n* fix' bash "$script" >/dev/null
 jq -e '.meta.color == "danger" and .meta.title == "Custom title"
-    and .meta.text == "*bold* 웹 <b>\n\n*Release Notes*\n*🚀 Features*\n\n• *New* thing @a (#1)\n• fix"
+    and .meta.text == "⚠️ *bold* 웹 <b> at 10:30:00\n\n*Release Notes*\n*🚀 Features*\n\n• *New* thing @a (#1)\n• fix"
     and (.meta.fields | map(.title)) == ["배포 시각", "커밋"]' "$req" >/dev/null || { cat "$req"; fail 'failure card'; }
 
 # 3. blocks: section texts and fields become the body; header, divider, context and the 배포 시각 row do not.
