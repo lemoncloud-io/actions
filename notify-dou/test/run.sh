@@ -20,7 +20,7 @@ base_env() {
     export GITHUB_REPOSITORY=lemoncloud-io/sample-app GITHUB_SERVER_URL=https://github.com GITHUB_RUN_ID=42 GITHUB_RUN_NUMBER=7 \
         GITHUB_SHA=0123456789abcdef GITHUB_REF_NAME=develop GITHUB_ACTOR=octo GITHUB_WORKFLOW='Deploy Dev' \
         GITHUB_OUTPUT="$work/output" HEAD_COMMIT_MESSAGE=$'feat: ship it\n\nlong body' \
-        INPUT_TOKEN=test-token INPUT_CHANNEL_ID=1000037 INPUT_URL="http://127.0.0.1:$port/ok" \
+        INPUT_TOKEN=test-token INPUT_CHANNEL_ID=9990001 INPUT_URL="http://127.0.0.1:$port/ok" \
         INPUT_STATUS=success INPUT_STAGE=dev INPUT_TITLE='' INPUT_TEXT='' INPUT_BLOCKS='' INPUT_RELEASE_NOTES='' \
         INPUT_FIELDS=$'URL=https://dev.example.com/?a=b\r\n Env = dev \n =no key\nnot a field'
     : >"$work/output"
@@ -32,7 +32,7 @@ out=$(bash "$script" 2>&1)
 req="$work/request.json"
 [[ -f "$req" ]] || fail 'no request reached the mock'
 jq -e '
-    .token == "test-token" and .channelId == "1000037" and .content == "sample-app dev 배포 완료"
+    .token == "test-token" and .channelId == "9990001" and .content == "sample-app dev 배포 완료"
     and .meta.color == "good" and .meta.title == .content and .meta.text == "feat: ship it"
     and (.meta | has("username") | not) and .meta.footer == "sample-app · by octo · run #7"
     and .meta.sourceUrl == "https://github.com/lemoncloud-io/sample-app/actions/runs/42"
@@ -43,7 +43,7 @@ jq -e '
         {title: "URL", value: "https://dev.example.com/?a=b"},
         {title: "Env", value: "dev"}
     ]' "$req" >/dev/null || { cat "$req"; fail 'request body does not match the contract'; }
-grep -qx 'chat-id=1000037:1' "$work/output" || fail "chat-id output missing: $(cat "$work/output")"
+grep -qx 'chat-id=9990001:1' "$work/output" || fail "chat-id output missing: $(cat "$work/output")"
 [[ "$out" != *test-token* ]] || fail 'token leaked to stdout'
 
 # 2. failure status, explicit title/text, no version.
