@@ -56,7 +56,7 @@ become `•`. No `slackify-markdown-action` step is needed.
 | `stage` | — | Shown after the repo name in the header |
 | `title` | `<repo> <stage> 배포 <완료\|실패\|취소>` | Replaces the whole header text |
 | `text` | head commit subject (push events only) | mrkdwn; links are reduced to their label |
-| `blocks` | — | Block Kit JSON array a workflow already builds; used for the body when `text` is empty. Section texts and fields are kept; header, divider, context and a section with a `*배포 시각` field are dropped (the card has its own) |
+| `blocks` | — | Block Kit JSON array a workflow already builds; used for the body when `text` is empty. Section texts and fields are kept; header, divider, context and a section with a `*… 시각` field (배포 시각, 실패 시각) are dropped (the card has its own) |
 | `release-notes` | — | GitHub markdown, e.g. `steps.<release-drafter id>.outputs.body`; appended under *Release Notes* |
 | `fields` | — | Extra fields, one `Label=value` per line (split on the first `=`) |
 

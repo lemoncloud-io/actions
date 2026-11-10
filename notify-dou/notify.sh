@@ -63,11 +63,11 @@ fi
 text="${INPUT_TEXT:-}"
 if [[ -z "$text" && -n "${INPUT_BLOCKS:-}" ]]; then
     # A workflow that already assembles Block Kit keeps its builder: its sections become the body.
-    # Header, divider and context are the card's own job, and a section carrying 배포 시각 repeats
+    # Header, divider and context are the card's own job, and a section carrying a time (배포/실패 시각) repeats
     # the branch/commit fields the card always has.
     text=$(jq -r '
         [ .[]? | select(.type == "section")
-          | select([.fields[]?.text // "" | startswith("*배포 시각")] | any | not)
+          | select([.fields[]?.text // "" | test("^\\*[^*\\n]*시각")] | any | not)
           | (.text.text // empty), ([.fields[]?.text] | select(length > 0) | join("\n")) ]
         | join("\n")' <<<"$INPUT_BLOCKS" 2>/dev/null) ||
         echo '::warning title=notify-dou::blocks is not a JSON array of blocks, ignored'
